@@ -3,7 +3,7 @@ import ClaimFilterByInsureeMedicalService from "./components/ClaimFilterMedicalS
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
-  "claim.Filter": [ClaimFilterByInsureeMedicalService]
+  "claim.ReviewsFilter": [ClaimFilterByInsureeMedicalService]
 }
 
 export const ClaimAIQualityModule = (cfg) => {
