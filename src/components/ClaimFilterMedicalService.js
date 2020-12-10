@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { injectIntl } from 'react-intl';
-import { formatMessage, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import { injectIntl } from "react-intl";
+import { formatMessage, FormattedMessage, PublishedComponent, withModulesManager } from "@openimis/fe-core";
 
-import { Grid } from "@material-ui/core"
+import { Grid } from "@material-ui/core";
 
 const styles = theme => ({
     service: {
@@ -22,11 +22,11 @@ class ClaimFilterByInsureeMedicalService extends Component {
     render() {
         const { intl, classes, filters, onChangeFilters } = this.props;
         return (
-            <Grid service xs={3} className={classes.service}>
+            <Grid service xs={3} className={classes.item}>
             <PublishedComponent
-                id="medical.ServicePicker"
+                pubRef="medical.ServicePicker"
                 name="medicalService"
-                //label={formatMessage(intl, "claim", "medicalService")}
+                label= {formatMessage(intl, "claim_ai_quality", "medicalServiceFilter.label")}
                 value={(filters['medicalService'] && filters['medicalService']['value']) || null}
                 onChange={(v, s) => onChangeFilters([
                     {
@@ -41,4 +41,4 @@ class ClaimFilterByInsureeMedicalService extends Component {
     }
 }
 
-export default withTheme(withStyles(styles)(ClaimFilterByInsureeMedicalService));
+export default withModulesManager(injectIntl(withTheme(withStyles(styles)(ClaimFilterByInsureeMedicalService))));
