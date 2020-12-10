@@ -1,3 +1,4 @@
 {
-    "medicalServiceFilter.label": "Medical Service"
+    "medicalServiceFilter.label": "Medical Service",
+    "medicalItemFilter.label": "Medical Item"
 }

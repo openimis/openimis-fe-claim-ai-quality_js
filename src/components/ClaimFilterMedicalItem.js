@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { injectIntl } from 'react-intl';
-import { formatMessage, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import { formatMessage, FormattedMessage, PublishedComponent, withModulesManager } from "@openimis/fe-core";
 
 import { Grid } from "@material-ui/core"
 
@@ -24,9 +24,9 @@ class ClaimFilterByInsureeMedicalItem extends Component {
         return (
             <Grid item xs={3} className={classes.item}>
             <PublishedComponent
-                id="medical.ItemPicker"
+                pubRef="medical.ItemPicker"
                 name="medicalItem"
-                //label={formatMessage(intl, "claim", "medicalItem")}
+                label= {formatMessage(intl, "claim_ai_quality", "medicalItemFilter.label")}
                 value={(filters['medicalItem'] && filters['medicalItem']['value']) || null}
                 onChange={(v, s) => onChangeFilters([
                     {
@@ -41,4 +41,4 @@ class ClaimFilterByInsureeMedicalItem extends Component {
     }
 }
 
-export default withTheme(withStyles(styles)(ClaimFilterByInsureeMedicalItem));
+export default withModulesManager(injectIntl(withTheme(withStyles(styles)(ClaimFilterByInsureeMedicalItem))));
