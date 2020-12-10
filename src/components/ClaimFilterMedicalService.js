@@ -6,7 +6,7 @@ import { formatMessage, FormattedMessage, PublishedComponent, withModulesManager
 import { Grid } from "@material-ui/core";
 
 const styles = theme => ({
-    service: {
+    item: {
         padding: theme.spacing(1)
     },
 })
@@ -22,7 +22,7 @@ class ClaimFilterByInsureeMedicalService extends Component {
     render() {
         const { intl, classes, filters, onChangeFilters } = this.props;
         return (
-            <Grid service xs={3} className={classes.item}>
+            <Grid item xs={3} className={classes.item}>
             <PublishedComponent
                 pubRef="medical.ServicePicker"
                 name="medicalService"
