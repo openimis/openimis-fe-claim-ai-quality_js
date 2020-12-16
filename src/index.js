@@ -1,10 +1,12 @@
 import messages_en from "./translations/en.json";
 import ClaimFilterByInsureeMedicalItem from "./components/ClaimFilterMedicalItem";
 import ClaimFilterByInsureeMedicalService from "./components/ClaimFilterMedicalService";
+import ClaimFilterWasCategorised from "./components/ClaimFilterWasCategorised";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
-  "claim.ReviewsFilter": [ClaimFilterByInsureeMedicalItem, ClaimFilterByInsureeMedicalService]
+  "claim.ReviewsFilter": [ClaimFilterByInsureeMedicalItem, ClaimFilterByInsureeMedicalService],
+  "claim.Filter": [ClaimFilterWasCategorised]
 }
 
 export const ClaimAIQualityModule = (cfg) => {
