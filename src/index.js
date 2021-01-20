@@ -5,8 +5,7 @@ import ClaimFilterWasCategorised from "./components/ClaimFilterWasCategorised";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
-  "claim.ReviewsFilter": [ClaimFilterByInsureeMedicalItem, ClaimFilterByInsureeMedicalService],
-  "claim.Filter": [ClaimFilterWasCategorised]
+  "claim.ReviewsFilter": [ClaimFilterByInsureeMedicalItem, ClaimFilterByInsureeMedicalService, ClaimFilterWasCategorised],
 }
 
 export const ClaimAIQualityModule = (cfg) => {

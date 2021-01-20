@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { injectIntl } from "react-intl";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Grid, FormControlLabel, Checkbox } from "@material-ui/core";
+import { formatMessage, withModulesManager } from "@openimis/fe-core";
 
 
 
@@ -37,7 +39,8 @@ class ClaimFilterWasCategorised extends Component {
         var json_ext = !!filters['jsonExt'] ? filters['jsonExt'] : null
         var v = !!json_ext ? json_ext['value'] : {}
 
-        v.wasCategorized = categorized
+        v.claim_ai_quality = {}
+        v.claim_ai_quality.was_categorized = categorized
         this._assignExtValueToFilter(v)
     }
 
@@ -45,8 +48,8 @@ class ClaimFilterWasCategorised extends Component {
         const { filters } = this.props;
         var json_ext = !!filters['jsonExt'] ? filters['jsonExt'] : null
 
-        if (json_ext !== null && !!json_ext['value']) {
-            delete json_ext['value']['wasCategorized']
+        if (json_ext !== null && !!json_ext['value'] && !!json_ext['value']['claim_ai_quality']) {
+            delete json_ext['value']['claim_ai_quality']
             this._assignExtValueToFilter(json_ext['value'])
         } 
     }
@@ -59,16 +62,25 @@ class ClaimFilterWasCategorised extends Component {
     }
 
     _checkAddCategorization(json_ext, prev_json_ext) {
-        var json_exists = (json_ext === null );
-        var valueUpdated = (prev_json_ext['value']['wasCategorized'] != this.state.categorized && this.state.categorized === true);
-        return (json_exists || valueUpdated)
-        
+        const { filters } = this.props;
+        var json_not_exists = (json_ext === null);
+        var prev_claim_param = prev_json_ext['value']
+        var valueExisted = !!prev_claim_param['claim_ai_quality']
+        var valueUpdated = false
+        var wasCategorized = false
+        if (valueExisted) {
+            wasCategorized = prev_claim_param['claim_ai_quality']['was_categorized']
+        }
+        var valueUpdated = (wasCategorized != this.state.categorized && this.state.categorized === true);
+
+        var statusChecked = (!!filters['claimStatus'] && filters['claimStatus']['value'] === 4)
+
+        return statusChecked && (json_not_exists || valueUpdated)  
     }
 
     _checkRemoveJson(json_ext) {
         var checkboxState = this.state.categorized === false;
-        var jsonHasAttribute = !!json_ext['value']['wasCategorized']
-
+        var jsonHasAttribute = (!!json_ext && !!json_ext['value']['claim_ai_quality'])
         return checkboxState && jsonHasAttribute
     }
 
@@ -86,7 +98,7 @@ class ClaimFilterWasCategorised extends Component {
     }
 
     render() {
-        const { classes, filters, onChangeFilters } = this.props;
+        const { intl, classes, filters, onChangeFilters } = this.props;
         return (
             <Grid item xs={4} className={classes.item}>
                 <FormControlLabel 
@@ -97,11 +109,11 @@ class ClaimFilterWasCategorised extends Component {
                                 onChange={e => this._onWasCategorizedCheckbox()}
                             />
                         }
-                        label="Categorized"
+                        label={formatMessage(intl, "claim_ai_quality", "categorizedByAI.label")}
                     />
             </Grid>
         )
     }
 }
 
-export default withTheme(withStyles(styles)(ClaimFilterWasCategorised));
+export default withModulesManager(injectIntl(withTheme(withStyles(styles)(ClaimFilterWasCategorised))));
