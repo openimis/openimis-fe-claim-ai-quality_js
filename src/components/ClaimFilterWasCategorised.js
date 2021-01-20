@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { injectIntl } from "react-intl";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Grid, FormControlLabel, Checkbox } from "@material-ui/core";
+import { formatMessage, withModulesManager } from "@openimis/fe-core";
 
 
 
@@ -69,7 +71,6 @@ class ClaimFilterWasCategorised extends Component {
         if (valueExisted) {
             wasCategorized = prev_claim_param['claim_ai_quality']['was_categorized']
         }
-        console.log("Was cat: " + wasCategorized)
         var valueUpdated = (wasCategorized != this.state.categorized && this.state.categorized === true);
 
         var statusChecked = (!!filters['claimStatus'] && filters['claimStatus']['value'] === 4)
@@ -80,7 +81,6 @@ class ClaimFilterWasCategorised extends Component {
     _checkRemoveJson(json_ext) {
         var checkboxState = this.state.categorized === false;
         var jsonHasAttribute = (!!json_ext && !!json_ext['value']['claim_ai_quality'])
-        console.log(JSON.stringify(json_ext), json_ext['value']['claim_ai_quality'])
         return checkboxState && jsonHasAttribute
     }
 
@@ -98,7 +98,7 @@ class ClaimFilterWasCategorised extends Component {
     }
 
     render() {
-        const { classes, filters, onChangeFilters } = this.props;
+        const { intl, classes, filters, onChangeFilters } = this.props;
         return (
             <Grid item xs={4} className={classes.item}>
                 <FormControlLabel 
@@ -109,11 +109,11 @@ class ClaimFilterWasCategorised extends Component {
                                 onChange={e => this._onWasCategorizedCheckbox()}
                             />
                         }
-                        label="Categorized by AI"
+                        label={formatMessage(intl, "claim_ai_quality", "categorizedByAI.label")}
                     />
             </Grid>
         )
     }
 }
 
-export default withTheme(withStyles(styles)(ClaimFilterWasCategorised));
+export default withModulesManager(injectIntl(withTheme(withStyles(styles)(ClaimFilterWasCategorised))));
