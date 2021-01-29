@@ -34,7 +34,7 @@ class ClaimAiCategorizationReport extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { filters } = this.props;
-        var new_status = [8, 16].includes(!!filters['claimStatus'] ? filters['claimStatus'].value : '')
+        var new_status = [2, 4].includes(!!filters['claimStatus'] ? filters['claimStatus'].value : '')
         
         if (new_status != prevState.hidden) {
             this.setState({hidden: new_status})
