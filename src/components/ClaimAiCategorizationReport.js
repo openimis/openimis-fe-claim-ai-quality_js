@@ -23,7 +23,8 @@ const styles = theme => ({
 
 class ClaimAiCategorizationReport extends Component {
     state = {
-        hidden: false
+        hidden: false,
+        claim_ai: null
     }
 
     _filterValue = k => {
@@ -64,7 +65,7 @@ class ClaimAiCategorizationReport extends Component {
 }
 
 const mapStateToProps = state => ({
-    generating: state.claim_batch.generating,
+    generating: state.claim_ai_quality.generating,
 });
 
 const mapDispatchToProps = dispatch => {

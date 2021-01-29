@@ -5,7 +5,7 @@ export function generateReport(prms) {
     var qParams = {
       adminUuid: prms.admin ? prms.admin.value.uuid : '',
       patientChfId: prms.chfId ? prms.chfId.value : '',
-      claimStatus: prms.claimStatus ? prms.claimStatus.code : '',
+      claimStatus: prms.claimStatus ? prms.claimStatus.value : '',
       claimDateFrom: prms.claimDateFrom ? prms.claimDateFrom.value : '',
       claimDateTo: prms.claimDateTo ? prms.claimDateTo.value : '',
       claimCode: prms.claimNo ? prms.claimNo.value : '',
@@ -29,13 +29,13 @@ export function generateReport(prms) {
       return fetch(url)
         .then(response => response.blob())
         .then(blob => openBlob(blob, `${_.uuid()}.pdf`, "pdf"))
-        .then(e => dispatch({ type: 'CLAIM_BATCH_PREVIEW_DONE', payload: prms }))
+        .then(e => dispatch({ type: 'CLAIM_AI_PREVIEW_DONE', payload: prms }))
     }
   }
 
 
   export function preview() {
     return dispatch => {
-      dispatch({ type: 'CLAIM_BATCH_PREVIEW' })
+      dispatch({ type: 'CLAIM_AI_PREVIEW' })
     }
   }
