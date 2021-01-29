@@ -1,5 +1,6 @@
 {
     "medicalServiceFilter.label": "Medical Service",
     "medicalItemFilter.label": "Medical Item",
-    "categorizedByAI.label": "Categorized by AI"
+    "categorizedByAI.label": "Categorized by AI",
+    "misclassificationReport.label": "AI Misclassification Report"
 }
