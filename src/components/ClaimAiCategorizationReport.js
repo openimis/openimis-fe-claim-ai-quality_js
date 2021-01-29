@@ -7,7 +7,7 @@ import PreviewIcon from "@material-ui/icons/ListAlt";
 import { formatMessage, FormattedMessage, PublishedComponent, withModulesManager } from "@openimis/fe-core";
 import { preview, generateReport } from "../actions"
 
-import { Grid, IconButton, CircularProgress } from "@material-ui/core"
+import { Grid, IconButton, CircularProgress, Button } from "@material-ui/core"
 
 const styles = theme => ({
     item: {
@@ -22,6 +22,10 @@ const styles = theme => ({
 
 
 class ClaimAiCategorizationReport extends Component {
+    state = {
+        hidden: false
+    }
+
     _filterValue = k => {
         const { filters } = this.props;
         return !!filters[k] ? filters[k].value : null
@@ -29,9 +33,13 @@ class ClaimAiCategorizationReport extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { filters } = this.props;
+        var new_status = [8, 16].includes(!!filters['claimStatus'] ? filters['claimStatus'].value : '')
+        
+        if (new_status != prevState.hidden) {
+            this.setState({hidden: new_status})
+        }
+
         if (!prevProps.generating && !!this.props.generating) {
-            console.log("STATE: " + this.state)
-            console.log(filters)
             this.props.generateReport({ ...filters })
         } 
     }
@@ -39,11 +47,15 @@ class ClaimAiCategorizationReport extends Component {
     render() {
         const { intl, classes, generating } = this.props;
         return (
-            <Grid item className={classes.paperHeaderAction}>
+            <Grid item className={classes.item}>
             {!generating &&
-                <IconButton onClick={e => this.props.preview()}>
-                    <PreviewIcon />
-                </IconButton>
+                <Button 
+                    onClick={e => this.props.preview()}
+                    variant="contained" color="primary"
+                    style={{visibility: !this.state.hidden ? 'visible' : 'hidden' }}
+                    >
+                    {formatMessage(intl, "claim_ai_quality", "misclassificationReport.label")}
+                </Button>
             }
             {!!generating && <CircularProgress className={classes.generating} size={24} />}
         </Grid>

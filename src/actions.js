@@ -5,6 +5,7 @@ export function generateReport(prms) {
     var qParams = {
       adminUuid: prms.admin ? prms.admin.value.uuid : '',
       patientChfId: prms.chfId ? prms.chfId.value : '',
+      claimStatus: prms.claimStatus ? prms.claimStatus.code : '',
       claimDateFrom: prms.claimDateFrom ? prms.claimDateFrom.value : '',
       claimDateTo: prms.claimDateTo ? prms.claimDateTo.value : '',
       claimCode: prms.claimNo ? prms.claimNo.value : '',
