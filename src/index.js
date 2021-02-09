@@ -6,7 +6,7 @@ import ClaimAiCategorizationReport from "./components/ClaimAiCategorizationRepor
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
   "reducers": [{ key: 'claim_ai_quality', reducer }],
-  "claim.Filter": [ClaimFilterWasCategorised, ClaimAiCategorizationReport],
+  "claim.ReviewsFilter": [ClaimFilterWasCategorised, ClaimAiCategorizationReport],
 }
 
 export const ClaimAIQualityModule = (cfg) => {
