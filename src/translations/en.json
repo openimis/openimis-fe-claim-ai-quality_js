@@ -1,4 +1,5 @@
 {
     "categorizedByAI.label": "Categorized by AI",
-    "misclassificationReport.label": "AI Misclassification Report"
+    "misclassificationReport.label": "AI Misclassification Report",
+    "claimSummaries.claim_ai_quality.was_categorized": "ClaimResultsAIProcessed"
 }
