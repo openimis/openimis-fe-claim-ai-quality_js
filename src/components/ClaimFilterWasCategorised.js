@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { injectIntl } from "react-intl";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Grid, FormControlLabel, Checkbox } from "@material-ui/core";
-import { formatMessage, withModulesManager } from "@openimis/fe-core";
+import { Grid, FormControlLabel, Checkbox, Select, MenuItem} from "@material-ui/core";
+import { formatMessage, withModulesManager, SelectInput } from "@openimis/fe-core";
 
 
 
@@ -17,7 +17,7 @@ class ClaimFilterWasCategorised extends Component {
 
     state = {
         reset: 0,
-        categorized: true,
+        categorized: 1,
     }
 
     _assignExtValueToFilter(json_ext_value) {
@@ -33,7 +33,7 @@ class ClaimFilterWasCategorised extends Component {
         ]);
     }
     
-    _addWasCategorized(categorized=true) {
+    _addWasCategorized(categorized=1) {
         const { filters } = this.props;
 
         var json_ext = !!filters['jsonExt'] ? filters['jsonExt'] : null
@@ -54,63 +54,73 @@ class ClaimFilterWasCategorised extends Component {
         } 
     }
 
-    _onWasCategorizedCheckbox() {
+    _onWasCategorized(state) {
         this.setState({
-            categorized: !this.state.categorized,
+            categorized: state,
             reset: this.state.reset + 1,
         });
     }
 
-    _checkAddCategorization(json_ext, prev_json_ext) {
+    _checkAddCategorization(prev_props) {
         const { filters } = this.props;
+        var json_ext = !!filters['jsonExt'] ? filters['jsonExt'] : null
         var json_not_exists = (json_ext === null);
+
+        var prev_json_ext = !!prev_props.filters['jsonExt'] ? prev_props.filters['jsonExt'] : {'value': {}} 
         var prev_claim_param = prev_json_ext['value']
+        
         var valueExisted = !!prev_claim_param['claim_ai_quality']
         var valueUpdated = false
-        var wasCategorized = false
+        var wasCategorized = -1
+        
         if (valueExisted) {
-            wasCategorized = prev_claim_param['claim_ai_quality']['was_categorized']
+            wasCategorized = prev_claim_param['claim_ai_quality']['was_categorized'] === true ? 1 : 2
         }
-        var valueUpdated = (wasCategorized != this.state.categorized && this.state.categorized === true);
 
+        var valueUpdated = (wasCategorized !== this.state.categorized);
         var statusChecked = (!!filters['claimStatus'] && filters['claimStatus']['value'] === 4)
 
         return statusChecked && (json_not_exists || valueUpdated)  
     }
 
-    _checkRemoveJson(json_ext) {
-        var checkboxState = this.state.categorized === false;
+    _checkRemoveJson() {
+        const { filters } = this.props;
+        var json_ext = !!filters['jsonExt'] ? filters['jsonExt'] : null
+        var removeState = (this.state.categorized === null)
         var jsonHasAttribute = (!!json_ext && !!json_ext['value']['claim_ai_quality'])
-        return checkboxState && jsonHasAttribute
+        return removeState && jsonHasAttribute
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { filters } = this.props;
-
-        var json_ext = !!filters['jsonExt'] ? filters['jsonExt'] : null
-        var prev_json_ext = !!prevProps.filters['jsonExt'] ? prevProps.filters['jsonExt'] : {'value': {}} 
         
-        if (this._checkAddCategorization(json_ext, prev_json_ext)) {
-            this._addWasCategorized();
-        } else if (this._checkRemoveJson(json_ext)) {
-            this._removeWasCategorized();
+        if (this._checkRemoveJson()) {
+            this._removeWasCategorized()
+        } else if (this._checkAddCategorization(prevProps)) {
+            if (this.state.categorized === 1)
+                this._addWasCategorized(true)
+            if (this.state.categorized === 2)
+                this._addWasCategorized(false)
         }
     }
 
     render() {
         const { intl, classes, filters, onChangeFilters } = this.props;
+        const options = [
+            {value: 1, label: formatMessage(intl, "claim_ai_quality", "categorizedOnly.label")},
+            {value: 2, label: formatMessage(intl, "claim_ai_quality", "nonCategorizedOnly.label")},
+            {value: null, label: formatMessage(intl, "claim_ai_quality", "allCategorized.label")}
+        ]
+        const state = this.state.categorized
         return (
-            <Grid item xs={4} className={classes.item}>
-                <FormControlLabel 
-                        control={
-                            <Checkbox
-                                color="primary"
-                                checked={this.state.categorized}
-                                onChange={e => this._onWasCategorizedCheckbox()}
-                            />
-                        }
-                        label={formatMessage(intl, "claim_ai_quality", "categorizedByAI.label")}
-                    />
+            <Grid item xs={3} className={classes.item}>
+                <SelectInput
+                    module='claim'
+                    strLabel={formatMessage(intl, "claim_ai_quality", "categorizedByAI.label")}
+                    options={options}
+                    value={state}
+                    onChange={v => this._onWasCategorized(v)}
+                />
             </Grid>
         )
     }
