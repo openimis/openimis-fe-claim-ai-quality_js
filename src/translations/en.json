@@ -4,5 +4,8 @@
     "nonCategorizedOnly.label": "Non AI-Categorized Claim Only",
     "allCategorized.label": "Show All",
     "misclassificationReport.label": "AI Misclassification Report",
-    "claimSummaries.claim_ai_quality.was_categorized": "ClaimResultsAIProcessed"
+    "claimSummaries.claim_ai_quality.was_categorized": "ClaimResultsAIProcessed",
+    "claim_ai_quality.resendForEvaluation": "Send for AI evaluation",
+    "claim_ai_quality.ClaimEvaluation.mutationLabel": "Claim evaluated: {code}", 
+    "claim_ai_quality.ClaimsEvaluation.mutationLabel": "Claims evaluated: {count}" 
 }

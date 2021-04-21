@@ -6,6 +6,9 @@ import {
 function reducer(
   state = {
     generatingReport: false,
+    errorClaim: null,
+    claim: {},
+    mutation: {},
   },
   action,
 ) {
@@ -20,9 +23,16 @@ function reducer(
               ...state,
               generating: false
           };
+      case 'CLAIM_AI_MUTATION_REQ':
+        return dispatchMutationReq(state, action)
+      case 'CLAIM_AI_MUTATION_RESP':
+        return dispatchMutationResp(state, "sendClaimsForAiEvaluation", action);
+      case 'CLAIM_AI_MUTATION_ERR':
+        return dispatchMutationErr(state, action);
       default:
           return state;
   }
 }
 
 export default reducer;
+
