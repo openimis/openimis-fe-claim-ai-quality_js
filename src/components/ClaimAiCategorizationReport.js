@@ -4,10 +4,10 @@ import { injectIntl } from 'react-intl';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PreviewIcon from "@material-ui/icons/ListAlt";
-import { formatMessage, FormattedMessage, PublishedComponent, withModulesManager } from "@openimis/fe-core";
-import { preview, generateReport } from "../actions"
+import { formatMessage, FormattedMessage, PublishedComponent, withModulesManager, journalize } from "@openimis/fe-core";
+import { preview, generateReport, generateSelectionReport } from "../actions"
 
-import { Grid, IconButton, CircularProgress, Button } from "@material-ui/core"
+import { Grid, IconButton, CircularProgress, Button, MenuItem } from "@material-ui/core"
 
 const styles = theme => ({
     item: {
@@ -33,7 +33,7 @@ class ClaimAiCategorizationReport extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { filters } = this.props;
+        const { filters, selection } = this.props;
         var new_status = [2, 4].includes(!!filters['claimStatus'] ? filters['claimStatus'].value : '')
         
         if (new_status != prevState.hidden) {
@@ -41,36 +41,42 @@ class ClaimAiCategorizationReport extends Component {
         }
 
         if (!prevProps.generating && !!this.props.generating) {
-            this.props.generateReport({ ...filters })
+            if (selection.length > 0){
+                this.props.generateSelectionReport({...filters}, selection)
+            }
+            else
+                this.props.generateReport({ ...filters })
         } 
     }
 
     render() {
         const { intl, classes, generating } = this.props;
         return (
-            <Grid item className={classes.item}>
+            <div>
             {!generating &&
-                <Button 
-                    onClick={e => this.props.preview()}
-                    variant="contained" color="primary"
-                    style={{visibility: !this.state.hidden ? 'visible' : 'hidden' }}
-                    >
+                <MenuItem key={`selectionsMenu-claim_ai-${classes.item}`} 
+                          onClick={e => this.props.preview()}>
                     {formatMessage(intl, "claim_ai_quality", "misclassificationReport.label")}
-                </Button>
+                </MenuItem>
             }
             {!!generating && <CircularProgress className={classes.generating} size={24} />}
-        </Grid>
+            </div>
         );
     }
 }
 
 const mapStateToProps = state => ({
     generating: state.claim_ai_quality.generating,
+    claimsPageInfo: state.claim.claimsPageInfo,
+    filters: state.core.filtersCache.claimReviewsPageFiltersCache,
+    //props used from super.componentDidUpdate !!
+    submittingMutation: state.claim.submittingMutation,
+    mutation: state.claim.mutation,
 });
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { preview, generateReport },
+        { preview, generateReport, generateSelectionReport, journalize },
         dispatch);
 };
 
