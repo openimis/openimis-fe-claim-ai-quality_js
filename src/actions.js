@@ -34,6 +34,22 @@ export function generateReport(prms) {
     }
   }
 
+export function generateSelectionReport(filters, selectedClaims) {
+    
+    let uuids = {
+      claimUuids: []
+    }
+    selectedClaims.forEach(x => uuids.claimUuids.push(x.uuid))
+    var url = new URL(`${window.location.origin}${baseApiUrl}/claim_ai_quality/report/`);
+    url.search = new URLSearchParams(uuids);
+    return (dispatch) => {
+      return fetch(url)
+        .then(response => response.blob())
+        .then(blob => openBlob(blob, `${_.uuid()}.pdf`, "pdf"))
+        .then(e => dispatch({ type: 'CLAIM_AI_PREVIEW_DONE', payload: filters }))
+    }
+  }
+
 
   export function preview() {
     return dispatch => {
@@ -63,47 +79,3 @@ export function sendForAIEvaluationMutation(claims, clientMutationLabel, clientM
     }
   )
 }
-
-
-let _labelMutation = (intl, selection, labelOne, labelMultiple, action) => {
-    if (selection.length === 1) {
-        action(selection,
-            formatMessageWithValues(
-                intl,
-                "claim_ai_quality",
-                labelOne,
-                { code: selection[0].code }
-            ));
-    } else {
-        action(selection,
-            formatMessageWithValues(
-                intl,
-                "claim_ai_quality",
-                labelMultiple,
-                { count: selection.length }
-            ),
-            selection.map(c => c.code)
-        );
-    }
-}
-
-export function sendClaimForAIEvaluation(selection) {
-    // _labelMutation(intl, selection,
-    //   "ProcessClaim.mutationLabel",
-    //   "ProcessClaims.mutationLabel",
-    //   sendForAIEvaluationMutation);
-
-    var url = new URL(`${window.location.origin}${baseApiUrl}/graphql`);
-    url.search = new URLSearchParams(qParams);
-    return (dispatch) => {
-      return fetch(url)
-        .then(response => response.blob())
-        .then(blob => openBlob(blob, `${_.uuid()}.pdf`, "pdf"))
-        .then(e => dispatch({ type: 'CLAIM_AI_PREVIEW_DONE', payload: prms }))
-    }
-  }
-
-export function claimReviewSelectionmenuContribution(selection) {
-  return "ProcessClaim.mutationLabel", "ProcessClaims.mutationLabel", sendForAIEvaluationMutation
-}
-

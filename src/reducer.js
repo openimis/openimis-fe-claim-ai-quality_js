@@ -5,7 +5,15 @@ import {
 
 function reducer(
   state = {
+    fetchingClaimCodeCount: false,
+    fetchedClaimCodeCount: false,
+    claimCodeCount: null,
+    errorClaimCodeCount: null,
+    
+    submittingMutation: false,
     generatingReport: false,
+    claims: null,
+    claimsPageInfo: { totalCount: 0 },
     errorClaim: null,
     claim: {},
     mutation: {},
@@ -13,6 +21,12 @@ function reducer(
   action,
 ) {
   switch (action.type) {
+      case 'CLAIM_AI_MUTATION_REQ':
+        return dispatchMutationReq(state, action);
+      case 'CLAIM_AI_MUTATION_RESP':
+        return dispatchMutationResp(state, "sendClaimsForAiEvaluation", action);
+      case 'CLAIM_AI_MUTATION_ERR':
+        return dispatchMutationErr(state, action);
       case 'CLAIM_AI_PREVIEW':
           return {
               ...state,
@@ -23,12 +37,6 @@ function reducer(
               ...state,
               generating: false
           };
-      case 'CLAIM_AI_MUTATION_REQ':
-        return dispatchMutationReq(state, action)
-      case 'CLAIM_AI_MUTATION_RESP':
-        return dispatchMutationResp(state, "sendClaimsForAiEvaluation", action);
-      case 'CLAIM_AI_MUTATION_ERR':
-        return dispatchMutationErr(state, action);
       default:
           return state;
   }
