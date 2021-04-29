@@ -17,17 +17,25 @@ None
 None
 
 ## Published Components
-None
+* `claim_ai_quality.ResendClaimForEvaluation`, additional Searcher menu entry for sending selected checked claims for reevaluation
 
 ## Dispatched Redux Actions
-None
+* `CLAIM_AI_MUTATION_{REQ|RESP|ERR}`: sending checked claims for reevaluation
+
 
 ## Other Modules Listened Redux Actions
 None
 
 ## Other Modules Redux State Bindings
-None
+* `state.core.user`, to access user info (rights,...)
 
 
 ## Configurations Options
-None
+##### ClaimAiProcessed
+Information regarding claim evaluation is stored in json_ext. In order for the ClaimAiProcessed column to be visible in the claim searcher results, an additional extField configuration for fe-claim is required. 
+Example content of fe-claim config json added through django admin panel:
+```
+{ 
+ "extFields": ["claim_ai_quality.was_categorized"]
+}
+```

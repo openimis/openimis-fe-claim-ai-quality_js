@@ -1,5 +1,6 @@
-import { decodeId, baseApiUrl, openBlob, toISODate } from "@openimis/fe-core";
+import { decodeId, baseApiUrl, openBlob, toISODate, formatMessageWithValues, formatMutation, graphql } from "@openimis/fe-core";
 import _ from "lodash-uuid";
+
 
 export function generateReport(prms) {
     var qParams = {
@@ -33,9 +34,48 @@ export function generateReport(prms) {
     }
   }
 
+export function generateSelectionReport(filters, selectedClaims) {
+    
+    let uuids = {
+      claimUuids: []
+    }
+    selectedClaims.forEach(x => uuids.claimUuids.push(x.uuid))
+    var url = new URL(`${window.location.origin}${baseApiUrl}/claim_ai_quality/report/`);
+    url.search = new URLSearchParams(uuids);
+    return (dispatch) => {
+      return fetch(url)
+        .then(response => response.blob())
+        .then(blob => openBlob(blob, `${_.uuid()}.pdf`, "pdf"))
+        .then(e => dispatch({ type: 'CLAIM_AI_PREVIEW_DONE', payload: filters }))
+    }
+  }
+
 
   export function preview() {
     return dispatch => {
       dispatch({ type: 'CLAIM_AI_PREVIEW' })
     }
   }
+
+
+export function sendForAIEvaluationMutation(claims, clientMutationLabel, clientMutationDetails = null) {
+  let claimUuids = `uuids: ["${claims.map(c => c.uuid).join("\",\"")}"]`
+  let mutation = formatMutation(
+    "sendClaimsForAiEvaluation",
+    claimUuids,
+    clientMutationLabel,
+    clientMutationDetails
+  );
+  var requestedDateTime = new Date();
+  claims.forEach(c => c.clientMutationId = mutation.clientMutationId);
+  return graphql(
+    mutation.payload,
+    ['CLAIM_AI_MUTATION_REQ', 'CLAIM_AI_MUTATION_RESP', 'CLAIM_AI_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      clientMutationDetails: !!clientMutationDetails ? JSON.stringify(clientMutationDetails) : null,
+      requestedDateTime
+    }
+  )
+}
