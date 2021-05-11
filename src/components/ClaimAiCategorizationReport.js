@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import PreviewIcon from "@material-ui/icons/ListAlt";
 import { formatMessage, FormattedMessage, PublishedComponent, withModulesManager, journalize } from "@openimis/fe-core";
 import { preview, generateReport, generateSelectionReport } from "../actions"
-
+import { RIGHT_MISCLASSIFICATION_REPORT_CREATE } from "../../constants";
 import { Grid, IconButton, CircularProgress, Button, MenuItem } from "@material-ui/core"
 
 const styles = theme => ({
@@ -50,22 +50,30 @@ class ClaimAiCategorizationReport extends Component {
     }
 
     render() {
-        const { intl, classes, generating } = this.props;
-        return (
-            <div>
-            {!generating &&
-                <MenuItem key={`selectionsMenu-claim_ai-${classes.item}`} 
-                          onClick={e => this.props.preview()}>
-                    {formatMessage(intl, "claim_ai_quality", "misclassificationReport.label")}
-                </MenuItem>
-            }
-            {!!generating && <CircularProgress className={classes.generating} size={24} />}
-            </div>
-        );
+        const { intl, filters, rights, classes, generating } = this.props;
+        let show_report = ![2, 4].includes(!!filters['claimStatus'] ? filters['claimStatus'].value : '')
+        let valid_rights = !!rights.filter(r => r == RIGHT_MISCLASSIFICATION_REPORT_CREATE).length
+        if (show_report && valid_rights) {
+            return (
+                <div>
+                {!generating &&
+                    <MenuItem key={`selectionsMenu-claim_ai-${classes.item}`} 
+                              onClick={e => this.props.preview()}>
+                        {formatMessage(intl, "claim_ai_quality", "misclassificationReport.label")}
+                    </MenuItem>
+                }
+                {!!generating && <CircularProgress className={classes.generating} size={24} />}
+                </div>
+            )
+        }
+        else {
+            return null
+        }
     }
 }
 
 const mapStateToProps = state => ({
+    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
     generating: state.claim_ai_quality.generating,
     claimsPageInfo: state.claim.claimsPageInfo,
     filters: state.core.filtersCache.claimReviewsPageFiltersCache,
