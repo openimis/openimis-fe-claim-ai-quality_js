@@ -7,5 +7,6 @@
     "claimSummaries.claim_ai_quality.was_categorized": "ClaimResultsAIProcessed",
     "claim_ai_quality.resendForEvaluation": "Send for AI evaluation",
     "claim_ai_quality.ClaimEvaluation.mutationLabel": "Claim evaluated: {code}", 
-    "claim_ai_quality.ClaimsEvaluation.mutationLabel": "Claims evaluated: {count}" 
+    "claim_ai_quality.ClaimsEvaluation.mutationLabel": "Claims evaluated: {count}",
+    "claim.rejectionReason.-2": "Rejected by a AI"
 }
